@@ -15,3 +15,10 @@ export type PageDTO = {
   order: number;
   photos: PhotoDTO[];
 };
+
+export type CoverDTO = {
+  url: string;
+  fileId: string;
+  width: number;
+  height: number;
+};

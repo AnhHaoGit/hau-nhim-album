@@ -21,7 +21,7 @@ function Shell({
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="flex max-h-[88vh] w-full max-w-3xl flex-col rounded-3xl bg-[#fbf1ec] shadow-2xl"
+        className="flex max-h-full w-full max-w-3xl flex-col rounded-3xl bg-[#fbf1ec] shadow-2xl"
         style={{ fontFamily: "var(--font-ui)" }}
       >
         <div className="flex items-center justify-between px-6 pt-5">
@@ -180,7 +180,7 @@ export function ReorderModal({
                 setList((l) => l.filter((x) => x._id !== p._id));
               }}
             >
-              Xoá trang
+              Xoá
             </button>
           </div>
         ))}

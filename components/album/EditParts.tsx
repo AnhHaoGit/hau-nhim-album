@@ -1,8 +1,7 @@
 "use client";
 import { useLayoutEffect, useRef, useState } from "react";
 
-export const MAX_WORDS = 60;
-const words = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+const noFocusSteal = (e: React.PointerEvent) => e.preventDefault();
 
 /** Ô ảnh trống: dấu + để thêm ảnh */
 export function AddPhoto({
@@ -30,10 +29,16 @@ export function AddPhoto({
       }}
     >
       <span style={{ textAlign: "center", lineHeight: 1 }}>
-        <span style={{ display: "block", fontSize: "22cqw", fontWeight: 200 }}>
+        <span
+          style={{
+            display: "block",
+            fontSize: "max(22cqw, 30px)",
+            fontWeight: 200,
+          }}
+        >
           {busy ? "…" : "+"}
         </span>
-        <span className="font-hand" style={{ fontSize: "5cqw" }}>
+        <span className="font-hand" style={{ fontSize: "max(5cqw, 11px)" }}>
           {busy ? "đang tải ảnh" : "thêm ảnh"}
         </span>
       </span>
@@ -52,13 +57,13 @@ export function PhotoTools({
   onClear: () => void;
 }) {
   const b: React.CSSProperties = {
-    width: "8cqw",
-    height: "8cqw",
+    width: "max(8cqw, 26px)",
+    height: "max(8cqw, 26px)",
     borderRadius: "50%",
     border: 0,
     background: "rgba(0,0,0,.6)",
     color: "#fff",
-    fontSize: "4.6cqw",
+    fontSize: "max(4.6cqw, 13px)",
     lineHeight: 1,
     cursor: "pointer",
   };
@@ -94,16 +99,20 @@ export function PhotoTools({
   );
 }
 
-/** Phụ đề: chưa có thì hiện dấu +, bấm vào mới hiện ô nhập */
+/** Phụ đề: chưa có thì hiện "+ phụ đề" mờ như placeholder; bấm vào mới hiện ô nhập.
+ *  Màu / bộ đếm / xoá nằm ở thanh công cụ nổi (EditView) để không bị tắt khi cập nhật. */
 export function CaptionEditor(props: {
   text: string;
   color: string;
   align: "left" | "center" | "right";
   fontSize: number;
+  maxLen: number;
   onText: (t: string) => void;
-  onColor: (c: string) => void;
+  onFocus: () => void;
+  onBlur: () => void;
 }) {
-  const { text, color, align, fontSize, onText, onColor } = props;
+  const { text, color, align, fontSize, maxLen, onText, onFocus, onBlur } =
+    props;
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLTextAreaElement>(null);
   const active = open || text.length > 0;
@@ -124,22 +133,25 @@ export function CaptionEditor(props: {
     );
 
   return (
-    <div className="cap-ed" style={{ position: "relative" }}>
+    <div data-cap-editor>
       <textarea
         ref={ref}
         rows={1}
         autoFocus={open && !text}
         value={text}
+        maxLength={maxLen}
         placeholder="phụ đề…"
-        onChange={(e) =>
-          words(e.target.value) <= MAX_WORDS && onText(e.target.value)
-        }
-        onBlur={() => !text && setOpen(false)}
+        onChange={(e) => onText(e.target.value)}
+        onFocus={onFocus}
+        onBlur={() => {
+          if (!text) setOpen(false);
+          onBlur();
+        }}
         style={{
           width: "100%",
           display: "block",
           background: "rgba(0,0,0,.18)",
-          border: "1px dashed #ffffff55",
+          border: "1px dashed #ffffff40",
           color,
           fontFamily: "inherit",
           fontSize: `${fontSize}cqw`,
@@ -147,77 +159,16 @@ export function CaptionEditor(props: {
           textAlign: align,
           resize: "none",
           overflow: "hidden",
-          padding: "0.6cqw 1cqw",
+          padding: "0.5cqw 1cqw",
           outline: "none",
           borderRadius: 4,
         }}
       />
-      <div
-        className="cap-ctl"
-        style={{
-          position: "absolute",
-          top: "100%",
-          right: 0,
-          display: "flex",
-          alignItems: "center",
-          gap: "1.5cqw",
-          marginTop: "1cqw",
-          zIndex: 7,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "var(--font-ui)",
-            fontSize: "2.8cqw",
-            color: "#fff",
-            background: "rgba(0,0,0,.55)",
-            borderRadius: 99,
-            padding: "0 1.6cqw",
-          }}
-        >
-          {words(text)}/{MAX_WORDS}
-        </span>
-        <input
-          type="color"
-          value={color}
-          title="Màu chữ"
-          onChange={(e) => onColor(e.target.value)}
-          style={{
-            width: "6cqw",
-            height: "6cqw",
-            padding: 0,
-            border: "2px solid #fff",
-            borderRadius: "50%",
-            background: "none",
-            cursor: "pointer",
-          }}
-        />
-        <button
-          type="button"
-          title="Xoá phụ đề"
-          onClick={() => {
-            onText("");
-            setOpen(false);
-          }}
-          style={{
-            width: "6cqw",
-            height: "6cqw",
-            borderRadius: "50%",
-            border: 0,
-            background: "rgba(0,0,0,.6)",
-            color: "#fff",
-            fontSize: "3.4cqw",
-            cursor: "pointer",
-          }}
-        >
-          ✕
-        </button>
-      </div>
     </div>
   );
 }
 
-/** Ngày trên viền trắng dày: chưa có thì hiện "+ ngày" */
+/** Ngày trên viền trắng dày: chưa có thì hiện "+ ngày" mờ */
 export function DateEditor({
   value,
   small,
@@ -243,9 +194,10 @@ export function DateEditor({
         position: "absolute",
         left: 0,
         right: 0,
-        bottom: small ? "1cqw" : "4.5cqw",
+        bottom: small ? "1cqw" : "4cqw",
         textAlign: "center",
         zIndex: 2,
+        whiteSpace: "nowrap",
       }}
     >
       <button
@@ -253,14 +205,15 @@ export function DateEditor({
         onClick={open}
         className="font-hand"
         style={{
-          border: value ? "0" : "1px dashed #aaa",
+          border: value ? "0" : "1px dashed #cfcabd",
           background: "transparent",
-          color: value ? "#222" : "#999",
-          fontSize: `${value ? size : size * 0.75}cqw`,
+          color: value ? "#222" : "#b3aea2",
+          fontSize: value ? `${size}cqw` : `max(${size * 0.72}cqw, 10px)`,
           lineHeight: 1,
           padding: value ? 0 : "0.8cqw 2cqw",
           borderRadius: 99,
           cursor: "pointer",
+          verticalAlign: "middle",
         }}
       >
         {value || "＋ ngày"}
@@ -269,14 +222,22 @@ export function DateEditor({
         <button
           type="button"
           title="Xoá ngày"
+          aria-label="Xoá ngày"
           onClick={() => onChange("")}
+          onPointerDown={noFocusSteal}
           style={{
-            marginLeft: "1.5cqw",
+            marginLeft: 6,
+            width: 26,
+            height: 26,
+            borderRadius: "50%",
             border: 0,
-            background: "transparent",
-            color: "#999",
-            fontSize: `${size * 0.8}cqw`,
+            background: "rgba(0,0,0,.1)",
+            color: "#444",
+            fontSize: 17,
+            lineHeight: "26px",
             cursor: "pointer",
+            verticalAlign: "middle",
+            padding: 0,
           }}
         >
           ×

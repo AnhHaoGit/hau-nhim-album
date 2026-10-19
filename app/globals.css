@@ -123,3 +123,318 @@ body::before {
 .cap-ed:focus-within .cap-ctl {
   opacity: 1;
 }
+
+/* ===== Bước 6: responsive + điện thoại + chỉnh sửa ===== */
+.app-root {
+  position: relative;
+  min-height: 100dvh;
+}
+
+.stage {
+  min-height: 100dvh;
+  padding: 80px 16px 24px;
+}
+
+/* thanh điều hướng */
+.site-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+}
+
+.site-logo {
+  font-size: 2.25rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.site-links {
+  display: flex;
+  gap: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .5);
+  padding: 4px;
+  backdrop-filter: blur(8px);
+}
+
+.site-link {
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--ink);
+  transition: background .2s;
+}
+
+.site-link[data-on="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* nút lật hai bên (màn thấp / điện thoại ngang) */
+.album-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, .7);
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+  backdrop-filter: blur(6px);
+}
+
+/* phụ đề + thanh công cụ */
+.edit-chip {
+  font-family: var(--font-ui);
+  border: 1.5px dashed rgba(255, 255, 255, .2);
+  color: rgba(255, 255, 255, .38);
+  background: transparent;
+  border-radius: 999px;
+  padding: .6cqw 2.4cqw;
+  font-size: max(3.2cqw, 10px);
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.edit-chip:hover {
+  color: rgba(255, 255, 255, .7);
+  border-color: rgba(255, 255, 255, .45);
+}
+
+.cap-toolbar {
+  position: fixed;
+  top: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 16px);
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(30, 28, 27, .94);
+  color: #fff;
+  font-family: var(--font-ui);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  overflow-x: auto;
+}
+
+.cap-count {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  opacity: .8;
+  white-space: nowrap;
+}
+
+.cap-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, .2);
+  flex: none;
+}
+
+.cap-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .25);
+  flex: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cap-swatch[data-on="true"] {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .35);
+}
+
+.cap-custom {
+  position: relative;
+  overflow: hidden;
+  background: conic-gradient(#f66, #fc4, #6e8, #4cf, #a6f, #f66);
+}
+
+.cap-custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.cap-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.cap-done {
+  background: var(--accent);
+}
+
+/* nút nổi góc dưới phải ở trang chỉnh sửa */
+.edit-fabs {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  font-family: var(--font-ui);
+}
+
+.edit-status {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .6);
+  padding: 2px 12px;
+  font-size: 12px;
+  backdrop-filter: blur(6px);
+}
+
+.edit-fab {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, .85);
+  color: var(--ink);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+}
+
+.edit-fab-main {
+  background: var(--accent);
+  color: #fff;
+}
+
+.edit-err {
+  position: fixed;
+  left: 50%;
+  top: 80px;
+  transform: translateX(-50%);
+  z-index: 60;
+  border-radius: 12px;
+  background: #ef4444;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
+}
+
+/* màn thấp: điện thoại ngang */
+@media (max-height: 520px) and (orientation: landscape) {
+  .stage {
+    padding: 40px 8px 8px;
+  }
+
+  .site-nav {
+    padding: 4px 12px;
+  }
+
+  .site-logo {
+    font-size: 1.3rem;
+  }
+
+  .site-link {
+    padding: 3px 10px;
+    font-size: .75rem;
+  }
+
+  .edit-fabs {
+    right: 8px;
+    bottom: 8px;
+    gap: 4px;
+  }
+
+  .edit-fab {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .cap-toolbar {
+    top: 38px;
+  }
+}
+
+@media (max-width: 820px) {
+  .site-nav {
+    padding: 10px 14px;
+  }
+
+  .site-logo {
+    font-size: 1.7rem;
+  }
+}
+
+/* ĐIỆN THOẠI ĐANG CẦM DỌC: xoay cả giao diện 90° để album nằm ngang, tận dụng toàn màn hình */
+@media (orientation: portrait) and (max-width: 820px) and (pointer: coarse) {
+
+  html,
+  body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .app-root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvh;
+    height: 100dvw;
+    transform-origin: 0 0;
+    transform: translateX(100dvw) rotate(90deg);
+    overflow: hidden;
+  }
+
+  .stage {
+    min-height: 0;
+    height: 100%;
+    padding: 40px 8px 8px;
+  }
+
+  .site-nav {
+    padding: 4px 12px;
+  }
+
+  .site-logo {
+    font-size: 1.3rem;
+  }
+
+  .site-link {
+    padding: 3px 10px;
+    font-size: .75rem;
+  }
+
+  .edit-fabs {
+    right: 8px;
+    bottom: 8px;
+    gap: 4px;
+  }
+
+  .edit-fab {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .cap-toolbar {
+    top: 38px;
+  }
+}

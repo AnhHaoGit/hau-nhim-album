@@ -2,7 +2,7 @@ import { ApiError } from "./api";
 import type { PhotoDTO } from "./types";
 
 export const MAX_PHOTOS = 4;
-export const MAX_WORDS = 60;
+export const MAX_CAPTION = 200; // trần an toàn phía server; giới hạn thật theo từng vị trí nằm ở layouts.ts
 
 export function cleanLayout(v: unknown): string {
   if (typeof v !== "string" || !/^[a-z0-9-]{1,40}$/.test(v))
@@ -25,8 +25,8 @@ export function cleanCaption(v: unknown): string {
   if (v == null) return "";
   if (typeof v !== "string") throw new ApiError("Phụ đề không hợp lệ");
   const t = v.trim();
-  if (t.length > 500 || (t ? t.split(/\s+/).length : 0) > MAX_WORDS)
-    throw new ApiError(`Phụ đề tối đa ${MAX_WORDS} chữ`);
+  if (t.length > MAX_CAPTION)
+    throw new ApiError(`Phụ đề tối đa ${MAX_CAPTION} ký tự`);
   return t;
 }
 

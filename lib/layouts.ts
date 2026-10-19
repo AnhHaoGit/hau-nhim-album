@@ -27,7 +27,14 @@ export type Slot = {
   ratio: number; // tỉ lệ rộng/cao của phần ảnh (không tính viền)
   bare?: boolean; // true: khung mỏng cho ảnh đã có sẵn viền (dải photobooth)
   rot: number;
-  cap: { x: number; y: number; w: number; rot: number; align: Align }; // vị trí phụ đề
+  cap: {
+    x: number;
+    y: number;
+    w: number;
+    rot: number;
+    align: Align;
+    lines?: number;
+  }; // vị trí phụ đề + số dòng tối đa
 };
 
 export type Deco =
@@ -71,6 +78,7 @@ export type Deco =
       rot?: number;
       fs?: number;
       z?: number;
+      script?: boolean;
     };
 
 export type Layout = { id: string; name: string; slots: Slot[]; deco: Deco[] };
@@ -512,3 +520,79 @@ export const LAYOUTS: Layout[] = [
 export const LAYOUT_MAP: Record<string, Layout> = Object.fromEntries(
   LAYOUTS.map((l) => [l.id, l]),
 );
+
+// ---- Phụ đề: cỡ chữ cố định (nhỏ, hợp với ảnh) + giới hạn KÝ TỰ theo chỗ trống của từng vị trí ----
+export const CAP_FS = 3.4; // đơn vị cqw (1cqw = 1% chiều rộng trang)
+const LINES: Record<string, number[]> = {
+  "single-portrait": [3],
+  "single-landscape": [3],
+  "duo-stagger": [5, 4],
+  "trio-casual": [5, 2, 2],
+  "quad-grid": [2, 2, 3, 2],
+  "booth-3": [4, 4, 4],
+  "big-small": [6, 3],
+  "duo-landscape": [5, 6],
+  "strip-wide": [2, 2],
+  "strip-tall": [2, 2],
+};
+LAYOUTS.forEach((l) =>
+  l.slots.forEach((s, i) => {
+    s.cap.lines = LINES[l.id]?.[i] ?? 2;
+  }),
+);
+
+export const capMax = (cap?: Slot["cap"]) =>
+  cap
+    ? Math.max(12, Math.floor(cap.w / (CAP_FS * 0.46)) * (cap.lines ?? 2))
+    : 60;
+
+// ---- Bìa trước (bìa sau để đen trơn) ----
+export const COVER: {
+  slot: { x: number; y: number; w: number; ratio: number; rot: number };
+  deco: Deco[];
+} = {
+  slot: { x: 17, y: 18, w: 66, ratio: 0.8, rot: -1.5 },
+  deco: [
+    {
+      t: "chalk",
+      text: "haunhim’s album",
+      x: 12,
+      y: 4.5,
+      w: 76,
+      fs: 9.5,
+      rot: -2,
+      script: true,
+    },
+    { t: "doodle", k: "underline", x: 30, y: 13.2, w: 40, rot: -2 },
+    { t: "tape", c: "pink", x: 10, y: 15.5, w: 20, rot: -35, z: 3 },
+    { t: "tape", c: "beige", x: 72, y: 15.5, w: 20, rot: 35, z: 3 },
+    {
+      t: "scrap",
+      text: "our story",
+      bg: "kraft",
+      x: 62,
+      y: 76,
+      w: 28,
+      rot: 6,
+      fs: 5.4,
+      tape: "pink",
+      z: 4,
+    },
+    { t: "doodle", k: "star", x: 85, y: 4, w: 7, rot: 12 },
+    { t: "doodle", k: "sparkle", x: 5, y: 40, w: 6 },
+    { t: "doodle", k: "sparkle", x: 90, y: 52, w: 5 },
+    { t: "doodle", k: "moon", x: 5, y: 68, w: 7, rot: -10 },
+    { t: "doodle", k: "hearts", x: 68, y: 91, w: 15, rot: 4 },
+    { t: "doodle", k: "flower", x: 86, y: 90, w: 9, rot: 10 },
+    { t: "doodle", k: "squiggle", x: 12, y: 95, w: 22 },
+    {
+      t: "chalk",
+      text: "forever & always",
+      x: 14,
+      y: 87.5,
+      w: 60,
+      fs: 5.6,
+      rot: -2,
+    },
+  ],
+};
