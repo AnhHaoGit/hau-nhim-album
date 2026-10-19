@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 const pw = process.argv[2];
 if (!pw) {
+  console.log(pw)
   console.log('Dùng: node scripts/hash.mjs "matkhau"');
   process.exit(1);
 }

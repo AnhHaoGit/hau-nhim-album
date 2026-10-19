@@ -12,7 +12,10 @@ export default function AlbumView() {
 
   const load = useCallback(async () => {
     const r = await fetch("/api/pages", { cache: "no-store" });
-    if (r.ok) setPages(await r.json());
+    if (r.ok) {
+      console.log('Fetched!!')
+      setPages(await r.json());
+    }
   }, []);
 
   useEffect(() => {
