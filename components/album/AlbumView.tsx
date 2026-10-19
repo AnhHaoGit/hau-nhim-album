@@ -13,8 +13,10 @@ export default function AlbumView() {
   const load = useCallback(async () => {
     const r = await fetch("/api/pages", { cache: "no-store" });
     if (r.ok) {
-      console.log('Fetched!!')
+      console.log("Fetched!!");
       setPages(await r.json());
+    } else {
+      console.log("Error!!!!!");
     }
   }, []);
 
