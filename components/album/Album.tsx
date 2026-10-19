@@ -146,7 +146,7 @@ function AlbumImpl({
           maxHeight={3000}
           showCover
           usePortrait={false}
-          startPage={Math.min(pageRef.current, total - 1)}
+          startPage={Math.min(page, total - 1)}
           flippingTime={900}
           maxShadowOpacity={0.55}
           drawShadow

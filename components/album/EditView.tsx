@@ -129,7 +129,7 @@ export default function EditView() {
     if (b.ok) setCover(await b.json());
   }, []);
   useEffect(() => {
-    load();
+    void Promise.resolve().then(load);
   }, [load]);
 
   async function flush(pageId: string) {

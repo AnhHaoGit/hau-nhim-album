@@ -119,10 +119,36 @@ export function CaptionEditor(props: {
 
   useLayoutEffect(() => {
     const el = ref.current;
-    if (el) {
+    if (!el) return;
+
+    const resize = () => {
       el.style.height = "auto";
       el.style.height = el.scrollHeight + "px";
-    }
+    };
+
+    resize();
+    const frame = requestAnimationFrame(resize);
+    const parent = el.parentElement;
+    let width = parent?.getBoundingClientRect().width;
+    const observer = parent
+      ? new ResizeObserver(([entry]) => {
+          if (entry.contentRect.width !== width) {
+            width = entry.contentRect.width;
+            resize();
+          }
+        })
+      : null;
+    if (parent) observer?.observe(parent);
+    let disposed = false;
+    void document.fonts.ready.then(() => {
+      if (!disposed) resize();
+    });
+
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
   }, [text, active, fontSize]);
 
   if (!active)
@@ -142,7 +168,10 @@ export function CaptionEditor(props: {
         maxLength={maxLen}
         placeholder="phụ đề…"
         onChange={(e) => onText(e.target.value)}
-        onFocus={onFocus}
+        onFocus={() => {
+          setOpen(true);
+          onFocus();
+        }}
         onBlur={() => {
           if (!text) setOpen(false);
           onBlur();
