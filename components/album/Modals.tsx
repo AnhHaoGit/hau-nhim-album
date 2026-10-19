@@ -17,14 +17,14 @@ function Shell({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-[#5b4640]/45 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#5b4640]/45 p-3 backdrop-blur-sm sm:p-4"
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="flex max-h-full w-full max-w-3xl flex-col rounded-3xl bg-[#fbf1ec] shadow-2xl"
+        className="flex max-h-[calc(100dvh-1.5rem)] min-h-0 w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-[#fbf1ec] shadow-2xl sm:max-h-[calc(100dvh-2rem)]"
         style={{ fontFamily: "var(--font-ui)" }}
       >
-        <div className="flex items-center justify-between px-6 pt-5">
+        <div className="flex shrink-0 items-center justify-between px-5 pt-4 sm:px-6 sm:pt-5">
           <h2 className="font-script text-3xl" style={{ color: "var(--ink)" }}>
             {title}
           </h2>
@@ -36,9 +36,13 @@ function Shell({
             ✕
           </button>
         </div>
-        <div className="overflow-auto px-6 py-4">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 sm:px-6">
+          {children}
+        </div>
         {footer && (
-          <div className="flex justify-end gap-3 px-6 pb-5">{footer}</div>
+          <div className="flex shrink-0 justify-end gap-3 border-t border-[#eadbd3] px-5 py-4 sm:px-6 sm:pb-5">
+            {footer}
+          </div>
         )}
       </div>
     </div>

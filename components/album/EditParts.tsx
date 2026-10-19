@@ -1,8 +1,6 @@
 "use client";
 import { useLayoutEffect, useRef, useState } from "react";
 
-const noFocusSteal = (e: React.PointerEvent) => e.preventDefault();
-
 /** Ô ảnh trống: dấu + để thêm ảnh */
 export function AddPhoto({
   busy,
@@ -197,7 +195,7 @@ export function CaptionEditor(props: {
   );
 }
 
-/** Ngày trên viền trắng dày: chưa có thì hiện "+ ngày" mờ */
+/** Nhãn ngày dạng văn bản để nhập được trên mọi trình duyệt, kể cả điện thoại. */
 export function DateEditor({
   value,
   small,
@@ -207,90 +205,39 @@ export function DateEditor({
   small?: boolean;
   onChange: (d: string) => void;
 }) {
-  const ref = useRef<HTMLInputElement>(null);
-  const iso = value ? value.split("/").reverse().join("-") : "";
-  const open = () => {
-    try {
-      ref.current?.showPicker();
-    } catch {
-      ref.current?.click();
-    }
-  };
   const size = small ? 3.4 : 6.2;
   return (
     <span
       style={{
         position: "absolute",
-        left: 0,
-        right: 0,
+        left: "2cqw",
+        right: "2cqw",
         bottom: small ? "1cqw" : "4cqw",
         textAlign: "center",
         zIndex: 2,
-        whiteSpace: "nowrap",
       }}
     >
-      <button
-        type="button"
-        onClick={open}
+      <input
+        type="text"
+        value={value}
+        maxLength={40}
+        aria-label="Ngày hoặc ghi chú ngày tháng"
+        placeholder="＋ ngày"
+        onChange={(e) => onChange(e.target.value)}
         className="font-hand"
         style={{
-          border: value ? "0" : "1px dashed #cfcabd",
+          boxSizing: "border-box",
+          width: "100%",
+          maxWidth: "100%",
+          border: value ? 0 : "1px dashed #cfcabd",
           background: "transparent",
-          color: value ? "#222" : "#b3aea2",
+          color: "#222",
           fontSize: value ? `${size}cqw` : `max(${size * 0.72}cqw, 10px)`,
-          lineHeight: 1,
-          padding: value ? 0 : "0.8cqw 2cqw",
+          lineHeight: 1.2,
+          padding: value ? "0.2cqw" : "0.8cqw 2cqw",
           borderRadius: 99,
-          cursor: "pointer",
-          verticalAlign: "middle",
-        }}
-      >
-        {value || "＋ ngày"}
-      </button>
-      {value && (
-        <button
-          type="button"
-          title="Xoá ngày"
-          aria-label="Xoá ngày"
-          onClick={() => onChange("")}
-          onPointerDown={noFocusSteal}
-          style={{
-            marginLeft: 6,
-            width: 26,
-            height: 26,
-            borderRadius: "50%",
-            border: 0,
-            background: "rgba(0,0,0,.1)",
-            color: "#444",
-            fontSize: 17,
-            lineHeight: "26px",
-            cursor: "pointer",
-            verticalAlign: "middle",
-            padding: 0,
-          }}
-        >
-          ×
-        </button>
-      )}
-      <input
-        ref={ref}
-        type="date"
-        tabIndex={-1}
-        value={iso}
-        min="1990-01-01"
-        onChange={(e) =>
-          onChange(
-            e.target.value ? e.target.value.split("-").reverse().join("/") : "",
-          )
-        }
-        style={{
-          position: "absolute",
-          left: "50%",
-          bottom: 0,
-          width: 1,
-          height: 1,
-          opacity: 0,
-          pointerEvents: "none",
+          outlineOffset: 2,
+          textAlign: "center",
         }}
       />
     </span>

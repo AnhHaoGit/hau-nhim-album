@@ -216,7 +216,7 @@ body::before {
   top: 58px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 40;
+  z-index: 100;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -370,7 +370,11 @@ body::before {
   }
 
   .cap-toolbar {
-    top: 38px;
+    top: 48px;
+    z-index: 100;
+    max-width: calc(100% - 12px);
+    gap: 6px;
+    padding: 7px 9px;
   }
 }
 
@@ -435,6 +439,24 @@ body::before {
   }
 
   .cap-toolbar {
-    top: 38px;
+    top: 48px;
+    z-index: 100;
+    max-width: calc(100% - 12px);
+    gap: 6px;
+    padding: 7px 9px;
+  }
+}
+
+/* Thanh chỉnh phụ đề luôn nằm trên navbar và đủ khoảng cách để không bị chồng nút trên mobile. */
+@media (max-width: 820px) {
+  .cap-toolbar {
+    z-index: 100;
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cap-toolbar button,
+  .cap-toolbar label {
+    touch-action: manipulation;
   }
 }

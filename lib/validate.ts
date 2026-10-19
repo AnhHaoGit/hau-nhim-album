@@ -12,13 +12,14 @@ export function cleanLayout(v: unknown): string {
 
 export function cleanDate(v: unknown): string {
   if (v == null || v === "") return "";
-  if (typeof v !== "string" || !/^\d{2}\/\d{2}\/\d{4}$/.test(v))
-    throw new ApiError("Ngày phải có dạng DD/MM/YYYY");
-  const [d, m, y] = v.split("/").map(Number);
-  const dt = new Date(y, m - 1, d);
-  if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d)
-    throw new ApiError("Ngày không tồn tại");
-  return v;
+  if (typeof v !== "string")
+    throw new ApiError("Ngày hoặc ghi chú không hợp lệ");
+  const text = v.trim();
+  // Đây là nhãn hiển thị tự do (ví dụ: 12/08/2026, Mùa hè 2026), không phải ngày ISO.
+  if (text.length > 40) throw new ApiError("Ngày hoặc ghi chú tối đa 40 ký tự");
+  if (/[\u0000-\u001f\u007f]/.test(text))
+    throw new ApiError("Ngày hoặc ghi chú chứa ký tự không hợp lệ");
+  return text;
 }
 
 export function cleanCaption(v: unknown): string {

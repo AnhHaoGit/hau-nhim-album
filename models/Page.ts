@@ -9,7 +9,7 @@ const PhotoSchema = new Schema(
     height: { type: Number, default: 0 },
     caption: { type: String, default: "" },
     captionColor: { type: String, default: "#f4f1ea" },
-    date: { type: String, default: "" }, // DD/MM/YYYY hoặc rỗng
+    date: { type: String, default: "", maxlength: 40 }, // Nhãn ngày/ghi chú dạng text
   },
   { _id: false },
 );
